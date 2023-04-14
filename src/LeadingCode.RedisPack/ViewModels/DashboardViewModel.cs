@@ -17,9 +17,6 @@ namespace LeadingCode.RedisPack.ViewModels;
 public partial class DashboardViewModel : ObservableObject, IScopedDependency
 {
     [ObservableProperty]
-    private int _counter = 0;
-
-    [ObservableProperty]
     private string _cmd1 = "pacman -Syu";
 
     [ObservableProperty]
@@ -37,12 +34,6 @@ public partial class DashboardViewModel : ObservableObject, IScopedDependency
     public DashboardViewModel()
     {
         
-    }
-
-    [RelayCommand]
-    private void OnCounterIncrement()
-    {
-        Counter++;
     }
 
     [RelayCommand]

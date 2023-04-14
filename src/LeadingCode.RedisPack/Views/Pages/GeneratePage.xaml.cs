@@ -4,21 +4,23 @@
 // All Rights Reserved.
 
 using Volo.Abp.DependencyInjection;
+using Wpf.Ui.Contracts;
 using Wpf.Ui.Controls.Navigation;
+using Wpf.Ui.Services;
 
 namespace LeadingCode.RedisPack.Views.Pages;
 
 /// <summary>
 /// Interaction logic for DataView.xaml
 /// </summary>
-public partial class DataPage : INavigableView<ViewModels.DataViewModel>, IScopedDependency
+public partial class GeneratePage : INavigableView<ViewModels.GenerateViewModel>, IScopedDependency
 {
-    public ViewModels.DataViewModel ViewModel
+    public ViewModels.GenerateViewModel ViewModel
     {
         get;
     }
 
-    public DataPage(ViewModels.DataViewModel viewModel)
+    public GeneratePage(ViewModels.GenerateViewModel viewModel)
     {
         ViewModel = viewModel;
         DataContext = this;

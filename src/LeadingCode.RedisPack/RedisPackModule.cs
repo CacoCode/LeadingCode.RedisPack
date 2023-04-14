@@ -1,4 +1,6 @@
-﻿using LeadingCode.RedisPack.Views;
+﻿using Autofac.Core;
+using LeadingCode.RedisPack.Apis;
+using LeadingCode.RedisPack.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Autofac;
 using Volo.Abp.Modularity;
@@ -13,6 +15,7 @@ public class RedisPackModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddSingleton<MainWindow>();
+
         //context.Services.AddSingleton<IPageService, PageService>();
 
         // Theme manipulation
@@ -23,6 +26,8 @@ public class RedisPackModule : AbpModule
 
         // Service containing navigation, same as INavigationWindow... but without window
         context.Services.AddSingleton<INavigationService, NavigationService>();
+        context.Services.AddScoped<IDialogService, DialogService>();
+        context.Services.AddScoped<ISnackbarService, SnackbarService>();
 
         // Main window with navigation
         //context.Services.AddScoped<INavigationWindow, MainWindow>();
@@ -35,5 +40,6 @@ public class RedisPackModule : AbpModule
         //context.Services.AddScoped<ViewModels.DataViewModel>();
         //context.Services.AddScoped<Views.Pages.SettingsPage>();
         //context.Services.AddScoped<ViewModels.SettingsViewModel>();
+        context.Services.AddHttpApi<IGithubRedisApi>();
     }
 }

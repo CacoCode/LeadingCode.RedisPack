@@ -45,8 +45,20 @@
                     FontSize="28"
                     FontWeight="DemiBold" />
             </ui:NavigationView.Header>
+            <ui:NavigationView.ContentOverlay>
+                <Grid>
+                    <ui:Snackbar x:Name="RootSnackbar" />
+                </Grid>
+            </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
 
+        <ui:Dialog
+            x:Name="RootDialog"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Padding="0,42,0,0"
+            ButtonLeftVisibility="Collapsed"
+            ButtonRightVisibility="Collapsed" />
         <ui:TitleBar
             Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
             Grid.Row="0"
@@ -63,5 +75,7 @@
                 </ui:NotifyIcon>
             </ui:TitleBar.Tray>
         </ui:TitleBar>
+
+
     </Grid>
 </ui:FluentWindow>

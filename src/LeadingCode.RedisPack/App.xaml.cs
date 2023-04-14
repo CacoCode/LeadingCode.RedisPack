@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Windows;
 using LeadingCode.RedisPack.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ public partial class App : Application
             _abpApplication =  await AbpApplicationFactory.CreateAsync<RedisPackModule>(options =>
             {
                 options.UseAutofac();
+
                 options.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             });
 

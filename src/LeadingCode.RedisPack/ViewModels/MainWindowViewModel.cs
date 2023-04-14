@@ -52,9 +52,9 @@ public partial class MainWindowViewModel : ObservableObject, IScopedDependency
                 },
                 new NavigationViewItem()
                 {
-                    Content = "Data",
+                    Content = "自动生成",
                     Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
-                    TargetPageType = typeof(Views.Pages.DataPage)
+                    TargetPageType = typeof(Views.Pages.GeneratePage)
                 }
             };
         var toggleThemeNavigationViewItem = new NavigationViewItem
