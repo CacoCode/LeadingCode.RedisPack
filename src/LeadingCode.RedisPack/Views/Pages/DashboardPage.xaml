@@ -1,0 +1,404 @@
+﻿<Page
+    x:Class="LeadingCode.RedisPack.Views.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="clr-namespace:LeadingCode.RedisPack.Views.Pages"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="DashboardPage"
+    d:DataContext="{d:DesignInstance pages:DashboardPage,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+    <ui:DynamicScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel Margin="42">
+            <!--  安装MSYS2程序  -->
+            <TextBlock
+                FontSize="18"
+                FontWeight="DemiBold"
+                Text="安装MSYS2程序" />
+            <!--<ui:Hyperlink Content="XAML source code" />-->
+            <TextBlock
+                Margin="0,12,0,0"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="安装MSYS2程序，MSYS是一个运行在Windows下的Unix壳程序，带有Shell和Make工具等，因而可以使用GNU编译链编译运行程序。"
+                TextWrapping="Wrap" />
+            <ui:Anchor Margin="0,12,0,0" NavigateUri="https://www.msys2.org/">
+                Download MSYS2
+            </ui:Anchor>
+            <Image
+                Width="500"
+                Margin="0,12"
+                HorizontalAlignment="Left"
+                Source="/Assets/install-2-path.png" />
+            <TextBlock
+                Margin="0,12,0,0"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="选择安装目录点击Next即可安装成功，第一次安装可能需要等待几分钟。"
+                TextWrapping="Wrap" />
+            <!--  配置MSYS2环境  -->
+            <TextBlock
+                Margin="0,24,0,12"
+                FontSize="18"
+                FontWeight="DemiBold"
+                Text="配置MSYS2环境" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="MSYS2安装之后，安装目录执行 MSYS2 MSYS，进入 MSYS2 之后主要就依赖于命令行的操作。"
+                TextWrapping="Wrap" />
+            <Image
+                Width="500"
+                Margin="0,12"
+                HorizontalAlignment="Left"
+                Source="/Assets/install-4-cmd.png" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="更新MSYS2系统，更新途中会询问是否继续，选择 Y。"
+                TextWrapping="Wrap" />
+            <ui:Card>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="$ pacman -Syu"
+                        TextWrapping="Wrap" />
+                    <ui:Button
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding ViewModel.CopyCommand, Mode=OneWay}"
+                        CommandParameter="1"
+                        Content="复制"
+                        Icon="CopySelect20" />
+                </Grid>
+            </ui:Card>
+            <TextBlock
+                Margin="0,12,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="安装 gcc make pkg-config"
+                TextWrapping="Wrap" />
+            <ui:Card>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="$ pacman -Sy gcc make pkg-config"
+                        TextWrapping="Wrap" />
+                    <ui:Button
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding ViewModel.CopyCommand, Mode=OneWay}"
+                        CommandParameter="2"
+                        Content="复制"
+                        Icon="CopySelect20" />
+                </Grid>
+            </ui:Card>
+            <TextBlock
+                Margin="0,12,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="首次执行命令会慢一点，需要等待一会。"
+                TextWrapping="Wrap" />
+
+            <!--  修改dlfcn.h文件  -->
+            <TextBlock
+                Margin="0,24,0,12"
+                FontSize="18"
+                FontWeight="DemiBold"
+                Text="修改dlfcn.h文件" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="打开 C:\msys64\usr\include\dlfcn.h 文件修改源码 注释或删除掉 宏判定 #if __GNU_VISIBLE （49行）和 #endif （61行） 不然会报找不到结构 Dl_info 错误。（注意：这里仅删除或注释宏判断关键字，不删除或注释宏判断里面的内容）。"
+                TextWrapping="Wrap" />
+            <Image
+                Width="500"
+                Margin="0,12"
+                HorizontalAlignment="Left"
+                Source="/Assets/dlinfo.png" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="到这里MSYS的配置就完成了，接下来就是下载Redis的压缩包。"
+                TextWrapping="Wrap" />
+
+
+            <!--  下载Redis  -->
+            <TextBlock
+                Margin="0,24,0,12"
+                FontSize="18"
+                FontWeight="DemiBold"
+                Text="下载Redis" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="在GitHub手动下载的Redis压缩包。"
+                TextWrapping="Wrap" />
+            <ui:Anchor Margin="0,0,0,12" NavigateUri="https://github.com/redis/redis/releases">
+                Github Redis
+            </ui:Anchor>
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="在MSYS中使用如下命令，对压缩包进行解压；redis.tar.gz替换为具体压缩包名称。"
+                TextWrapping="Wrap" />
+            <ui:Card>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="$ tar -xvf redis.tar.gz"
+                        TextWrapping="Wrap" />
+                    <ui:Button
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding ViewModel.CopyCommand, Mode=OneWay}"
+                        CommandParameter="3"
+                        Content="复制"
+                        Icon="CopySelect20" />
+                </Grid>
+            </ui:Card>
+
+            <!--  编译Redis  -->
+            <TextBlock
+                Margin="0,24,0,12"
+                FontSize="18"
+                FontWeight="DemiBold"
+                Text="编译Redis" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="使用MSYS2 MSYS 程序切换到Redis解压文件夹根目录（/d/docments/redistest/redis-7.0.10 为Redis解压路径，请自行替换。）"
+                TextWrapping="Wrap" />
+            <ui:Card>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="$ cd /d/docments/redistest/redis-7.0.10"
+                        TextWrapping="Wrap" />
+                    <ui:Button
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding ViewModel.CopyCommand, Mode=OneWay}"
+                        CommandParameter="4"
+                        Content="复制"
+                        Icon="CopySelect20" />
+                </Grid>
+            </ui:Card>
+            <Image
+                Width="500"
+                Margin="0,12"
+                HorizontalAlignment="Left"
+                Source="/Assets/msyscd.png" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="使用MSYS2 MSYS在Redis解压文件夹根目录下执行编译命令（/d/redis/dist 为保存编译Redis结果文件的空文件夹，请自行替换。）;第一次执行这条命令，需要等一会；会出现警告，可以忽略。"
+                TextWrapping="Wrap" />
+            <ui:Card>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="$ make PREFIX=/d/redis/dist install"
+                        TextWrapping="Wrap" />
+                    <ui:Button
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding ViewModel.CopyCommand, Mode=OneWay}"
+                        CommandParameter="5"
+                        Content="复制"
+                        Icon="CopySelect20" />
+                </Grid>
+            </ui:Card>
+            <Image
+                Width="500"
+                Margin="0,12"
+                HorizontalAlignment="Left"
+                Source="/Assets/make.png" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="命令执行完会生成如下几个文件。"
+                TextWrapping="Wrap" />
+            <Image
+                Width="500"
+                Margin="0,12"
+                HorizontalAlignment="Left"
+                Source="/Assets/files.png" />
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="目前还不能直接运行exe文件；还需要复制如下三个文件。"
+                TextWrapping="Wrap" />
+            <ui:Card>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="26" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ui:SymbolIcon Symbol="DocumentBulletList24" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="msys-2.0.dll"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="位于MSYS安装目录下的usr\bin中，默认为C:\msys64\usr\bin。"
+                        TextWrapping="Wrap" />
+
+                    <ui:SymbolIcon
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Symbol="DocumentBulletList24" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="redis.conf"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="位于Redis源码文件夹，例如：D:\RedisTest\redis-7.0.10。"
+                        TextWrapping="Wrap" />
+
+                    <ui:SymbolIcon
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Symbol="DocumentBulletList24" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="sentinel.conf"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="位于Redis源码文件夹，例如：D:\RedisTest\redis-7.0.10。"
+                        TextWrapping="Wrap" />
+                </Grid>
+            </ui:Card>
+            <TextBlock
+                Margin="0,12,0,12"
+                FontFamily="Comic Sans MS"
+                FontSize="16"
+                Text="最终结构如下，需要注意因为 MSYS2 的规定，我们的软件必须至少要放置在 2层目录文件夹内，才可以正常运行，比如 d:/redis/dist/bin/ 可以，d:/redis/ 则不可以。"
+                TextWrapping="Wrap" />
+            <Image
+                Width="500"
+                Margin="0,12"
+                HorizontalAlignment="Left"
+                Source="/Assets/files-1.png" />
+
+            <!--  启动Redis  -->
+            <TextBlock
+                Margin="0,24,0,12"
+                FontSize="18"
+                FontWeight="DemiBold"
+                Text="启动Redis" />
+            <ui:Card>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        Text="$ redis-server.exe redis.conf"
+                        TextWrapping="Wrap" />
+                    <ui:Button
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding ViewModel.CopyCommand, Mode=OneWay}"
+                        CommandParameter="6"
+                        Content="复制"
+                        Icon="CopySelect20" />
+                </Grid>
+            </ui:Card>
+        </StackPanel>
+    </ui:DynamicScrollViewer>
+    <!--<Grid Margin="42" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <ui:Button
+            Grid.Column="0"
+            Command="{Binding ViewModel.CounterIncrementCommand, Mode=OneWay}"
+            Content="Click me!"
+            Icon="Fluent24" />
+        <TextBlock
+            Grid.Column="1"
+            Margin="12,0,0,0"
+            VerticalAlignment="Center"
+            Text="{Binding ViewModel.Counter, Mode=OneWay}" />
+    </Grid>-->
+</Page>
