@@ -55,6 +55,12 @@ public partial class MainWindowViewModel : ObservableObject, IScopedDependency
                     Content = "自动生成",
                     Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
                     TargetPageType = typeof(Views.Pages.GeneratePage)
+                },
+                new NavigationViewItem()
+                {
+                    Content = "Redis版本",
+                    Icon = new SymbolIcon{Symbol = SymbolRegular.AlignSpaceEvenlyVertical20},
+                    TargetPageType = typeof(Views.Pages.RedisReleasePage)
                 }
             };
         var toggleThemeNavigationViewItem = new NavigationViewItem
