@@ -24,10 +24,75 @@
                 FontSize="18"
                 FontWeight="DemiBold"
                 Text="前提条件：需要安装了MSYS2" />
-
             <ui:Anchor NavigateUri="https://www.msys2.org/">
                 Download MSYS2
             </ui:Anchor>
+
+            <TextBlock
+                Margin="0,12,0,12"
+                FontSize="18"
+                FontWeight="DemiBold"
+                Text="配置MSYS（生成之前执行，仅首次使用需要配置）" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="120" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,12,0,12"
+                    VerticalAlignment="Center"
+                    FontFamily="Comic Sans MS"
+                    Text="MSYS程序目录" />
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Margin="0,12,0,12"
+                    Text="{Binding ViewModel.MsysDir, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <ui:Button
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Command="{Binding ViewModel.OpenDirCommand, Mode=OneWay}"
+                    CommandParameter="msys"
+                    Content="浏览本地目录" />
+
+                <ui:Button
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Width="200"
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Appearance="Info"
+                    Command="{Binding ViewModel.UpdateMSYSDataCommand, Mode=OneWay}"
+                    Content="Step1:更新软件包" />
+                <ui:Button
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    Width="200"
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Appearance="Info"
+                    Command="{Binding ViewModel.AddPkgCommand, Mode=OneWay}"
+                    Content="Step2:安装编译器" />
+
+            </Grid>
+
             <TextBlock
                 Margin="0,12,0,12"
                 FontSize="18"
@@ -46,7 +111,7 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock
+                <!--<TextBlock
                     Margin="0,12,0,12"
                     VerticalAlignment="Center"
                     FontFamily="Comic Sans MS"
@@ -64,7 +129,7 @@
                     VerticalAlignment="Center"
                     Command="{Binding ViewModel.OpenDirCommand, Mode=OneWay}"
                     CommandParameter="msys"
-                    Content="浏览本地目录" />
+                    Content="浏览本地目录" />-->
 
                 <TextBlock
                     Grid.Row="1"
@@ -80,7 +145,8 @@
                     DisplayMemberPath="Name"
                     IsEditable="True"
                     ItemsSource="{Binding ViewModel.RedisReleaseInfos, Mode=OneWay}"
-                    SelectedItem="{Binding ViewModel.RedisReleaseInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    SelectedItem="{Binding ViewModel.RedisReleaseInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding ViewModel.RedisTagName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <ui:Button
                     Grid.Row="1"
                     Grid.Column="2"
@@ -107,7 +173,7 @@
                     Grid.Row="3"
                     Grid.Column="1"
                     Margin="0,12,0,12"
-                    Text="{Binding ViewModel.SaveDir, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding ViewModel.RedisDir, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <ui:Button
                     Grid.Row="3"
                     Grid.Column="2"
@@ -125,7 +191,7 @@
                     Margin="0,12,0,12"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Appearance="Primary"
+                    Appearance="Info"
                     Command="{Binding ViewModel.GenerateCommand, Mode=OneWay}"
                     Content="生成" />
             </Grid>

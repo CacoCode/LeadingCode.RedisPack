@@ -27,10 +27,13 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Wpf.Ui.Common;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using MessageBox = System.Windows.MessageBox;
 using Wpf.Ui.Appearance;
 using System.Windows.Threading;
 using System.Timers;
+using LeadingCode.RedisPack.Helpers;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace LeadingCode.RedisPack.ViewModels;
 
@@ -38,11 +41,15 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
 {
     private bool _isInitialized = false;
     private readonly IGithubRedisApi _githubRedisApi;
+    private readonly IGithubRedisFileApi _githubRedisFileApi;
     private readonly IDialogService _dialogService;
     private readonly ISnackbarService _snackbarService;
     DispatcherTimer _timer;
-    private int _flag = 1;
-
+    private GenerateState _state = GenerateState.INIT;
+    private string _tempDir = string.Empty;
+    private string _redisDistDir = string.Empty;
+    private string _redisUnzipDir = string.Empty;
+    private IDialogControl _rootDialog;
 
     [ObservableProperty]
     private IEnumerable<DataColor> _colors;
@@ -53,18 +60,20 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
     private IEnumerable<RedisReleaseInfo> _redisReleaseInfos;
 
     [ObservableProperty]
+    private string _redisTagName;
+
+    [ObservableProperty]
     private string _msysDir = string.Empty;
 
     [ObservableProperty]
-    private string _saveDir = string.Empty;
+    private string _redisDir = string.Empty;
 
-
-
-    public GenerateViewModel(IGithubRedisApi githubRedisApi, IDialogService dialogService, ISnackbarService snackbarService)
+    public GenerateViewModel(IGithubRedisApi githubRedisApi, IDialogService dialogService, ISnackbarService snackbarService, IGithubRedisFileApi githubRedisFileApi)
     {
         _githubRedisApi = githubRedisApi;
         _dialogService = dialogService;
         _snackbarService = snackbarService;
+        _githubRedisFileApi = githubRedisFileApi;
     }
 
     public void OnNavigatedTo()
@@ -79,31 +88,10 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
 
     private void InitializeViewModel()
     {
-        var random = new Random();
-        var colorCollection = new List<DataColor>();
+        _rootDialog = _dialogService.GetDialogControl();
 
-        for (int i = 0; i < 8192; i++)
-            colorCollection.Add(new DataColor
-            {
-                Color = new SolidColorBrush(Color.FromArgb(
-                    (byte)200,
-                    (byte)random.Next(0, 250),
-                    (byte)random.Next(0, 250),
-                    (byte)random.Next(0, 250)))
-            });
-
-        Colors = colorCollection;
-
-        _isInitialized = true;
-    }
-
-    [RelayCommand]
-    private async Task OnGetRedisTags()
-    {
-        var rootDialog = _dialogService.GetDialogControl();
-
-        rootDialog.DialogHeight = 160;
-        rootDialog.Footer = new TextBlock
+        _rootDialog.DialogHeight = 160;
+        _rootDialog.Footer = new TextBlock
         {
             Margin = new Thickness(0, 10, 0, 10),
             HorizontalAlignment = HorizontalAlignment.Center,
@@ -111,14 +99,22 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
             Text = "加载中...",
         };
 
-        rootDialog.Content = new ProgressRing
+        _rootDialog.Content = new ProgressRing
         {
             IsIndeterminate = true,
             VerticalAlignment = VerticalAlignment.Center,
         };
-        rootDialog.Show();
+
+        _isInitialized = true;
+    }
+
+    [RelayCommand]
+    private async Task OnGetRedisTags()
+    {
+
+        _rootDialog.Show();
         RedisReleaseInfos = await _githubRedisApi.GetAsync();
-        rootDialog.Hide();
+        _rootDialog.Hide();
     }
 
     [RelayCommand]
@@ -132,7 +128,7 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
                 MsysDir = folderBrowserDialog.SelectedPath;
                 break;
             case "save":
-                SaveDir = folderBrowserDialog.SelectedPath;
+                RedisDir = folderBrowserDialog.SelectedPath;
                 break;
         }
     }
@@ -140,22 +136,34 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
     [RelayCommand]
     private void OnGenerate()
     {
-        //if (MsysDir.IsNullOrWhiteSpace() || !Directory.Exists(MsysDir)
-        //|| SaveDir.IsNullOrWhiteSpace() || !Directory.Exists(SaveDir)
-        //|| RedisReleaseInfo == null)
-        //    _snackbarService.Show("配置信息缺失", "请按规定正确填写配置信息", SymbolRegular.Fluent24, ControlAppearance.Danger);
-        //配置msys环境
-        ExecuteCmd("pacman -Syu");
-
+        _rootDialog.Show();
+        _tempDir = Path.Combine(RedisDir, "Temp");
+        CopyDlfcn();
+        DownloadRedis();
+        UnZipRedisFile();
     }
 
-    private void ExecuteCmd(string arguments)
+    [RelayCommand]
+    private void OnUpdateMSYSData()
+    {
+        _rootDialog.Show();
+        ExecuteCmd("pacman -Syu");
+    }
+
+    [RelayCommand]
+    private void OnAddPkg()
+    {
+        _rootDialog.Show();
+        ExecuteCmd("echo y | pacman -Sy gcc make pkg-config");
+    }
+
+    private void ExecuteCmd(string arguments, string? workdir = null)
     {
         var startInfo = new ProcessStartInfo
         {
             FileName = Path.Combine(MsysDir, "msys2.exe"),
             Arguments = arguments,
-            WorkingDirectory = MsysDir,
+            WorkingDirectory = workdir ?? MsysDir,
             RedirectStandardInput = true,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -182,22 +190,72 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
         var isClosed = Process.GetProcessesByName("mintty").Length == 0;
         if (!isClosed) return;
         _timer.Stop();
-        switch (_flag)
+        switch (_state)
         {
-            case 1:
-                ExecuteCmd("echo y | pacman -Sy gcc make pkg-config");
-                _flag++;
+            case GenerateState.INIT:
+                _rootDialog.Hide();
+                _snackbarService.Show("配置成功", $"MSYS配置成功。", SymbolRegular.Checkmark12, ControlAppearance.Success);
                 break;
-            case 2:
-                //下载redis
-                //copy文件与要修改的那一个文件
-                //编译redis
-                _flag++;
+            case GenerateState.REDIS_UNZIP_END:
+                CompileRedis();
                 break;
-            case 3:
-                //copy剩余三个文件
-                _flag++;
+            case GenerateState.REDIS_COMPILE_END:
+                CopyOtherRedisFile();
+                _rootDialog.Hide();
+                _snackbarService.Show("编译成功", $"文件已保存在{_redisDistDir}中，请查阅。", SymbolRegular.Checkmark12, ControlAppearance.Success);
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+    }
+
+    void DownloadRedis()
+    {
+        var response = _githubRedisFileApi.DownloadAsync($"{RedisTagName}.tar.gz").Result;
+        if (!Directory.Exists(_tempDir)) Directory.CreateDirectory(_tempDir);
+        var filePath = Path.Combine(_tempDir, $"{RedisTagName}.tar.gz");
+        using var fileStream = File.OpenWrite(filePath);
+        response.SaveAsAsync(fileStream).Wait();
+    }
+
+    void UnZipRedisFile()
+    {
+        _state = GenerateState.REDIS_UNZIP_END;
+        var cmd = $"tar -xvf {RedisTagName}.tar.gz";
+        ExecuteCmd(cmd, _tempDir);
+    }
+
+    void CopyDlfcn()
+    {
+        var source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dlfcn.h");
+        var target = Path.Combine(MsysDir, "usr", "include", "dlfcn.h");
+        File.Copy(source, target, true);
+    }
+
+    void CompileRedis()
+    {
+        _state = GenerateState.REDIS_COMPILE_END;
+        _redisDistDir = Path.Combine(RedisDir, $"dist-{RedisTagName}");
+        var cmd = $"make PREFIX={_redisDistDir.ToUnixPath()} install";
+        _redisUnzipDir = Path.Combine(_tempDir, $"redis-{RedisTagName}");
+        ExecuteCmd(cmd, _redisUnzipDir);
+    }
+
+    void CopyOtherRedisFile()
+    {
+        //msys-2.0.dll
+        var msysSource = Path.Combine(MsysDir, "usr", "bin", "msys-2.0.dll");
+        var msysTarget = Path.Combine(_redisDistDir, "bin", "msys-2.0.dll");
+        File.Copy(msysSource, msysTarget, true);
+
+        //redis.conf
+        var redisConfSource = Path.Combine(_redisUnzipDir, "redis.conf");
+        var redisConfTarget = Path.Combine(_redisDistDir, "bin", "redis.conf");
+        File.Copy(redisConfSource, redisConfTarget, true);
+
+        //sentinel.conf
+        var sentinelConfSource = Path.Combine(_redisUnzipDir, "sentinel.conf");
+        var sentinelConfTarget = Path.Combine(_redisDistDir, "bin", "sentinel.conf");
+        File.Copy(sentinelConfSource, sentinelConfTarget, true);
     }
 }

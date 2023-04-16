@@ -41,5 +41,7 @@ public class RedisPackModule : AbpModule
         //context.Services.AddScoped<Views.Pages.SettingsPage>();
         //context.Services.AddScoped<ViewModels.SettingsViewModel>();
         context.Services.AddHttpApi<IGithubRedisApi>();
+        context.Services.AddHttpApi<IGithubRedisFileApi>();
+        
     }
 }
