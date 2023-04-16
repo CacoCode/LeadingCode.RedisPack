@@ -46,15 +46,15 @@ public partial class MainWindowViewModel : ObservableObject, IScopedDependency
             {
                 new NavigationViewItem()
                 {
-                    Content = "手动生成",
-                    Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
-                    TargetPageType = typeof(Views.Pages.DashboardPage)
-                },
-                new NavigationViewItem()
-                {
                     Content = "自动生成",
                     Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
                     TargetPageType = typeof(Views.Pages.GeneratePage)
+                },
+                new NavigationViewItem()
+                {
+                    Content = "手动生成",
+                    Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
+                    TargetPageType = typeof(Views.Pages.DashboardPage)
                 },
                 new NavigationViewItem()
                 {

@@ -3,6 +3,7 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using LeadingCode.RedisPack.Views.Pages;
 using System;
 using System.Windows;
 using Wpf.Ui.Contracts;
@@ -37,6 +38,7 @@ public partial class MainWindow : INavigationWindow
         snackbarService.SetSnackbarControl(RootSnackbar);
         dialogService.SetDialogControl(RootDialog);
         navigationService.SetNavigationControl(RootNavigation);
+        RootNavigation.Loaded += (_, _) => RootNavigation.Navigate(typeof(GeneratePage));
     }
 
     #region INavigationWindow methods

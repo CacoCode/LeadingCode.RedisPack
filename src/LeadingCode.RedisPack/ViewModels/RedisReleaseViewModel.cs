@@ -1,37 +1,70 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LeadingCode.RedisPack.Apis;
 using LeadingCode.RedisPack.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 using Volo.Abp.DependencyInjection;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Controls.Navigation;
-using CommunityToolkit.Mvvm.Input;
+using Wpf.Ui.Contracts;
 
 namespace LeadingCode.RedisPack.ViewModels
 {
-    public partial class RedisReleaseViewModel : ObservableObject, IScopedDependency
+    public partial class RedisReleaseViewModel : ObservableObject,INavigationAware, IScopedDependency
     {
+        private bool _isInitialized = false;
         private readonly IGithubRedisApi _githubRedisApi;
+        private readonly IDialogService _dialogService;
+        public IDialogControl RootDialog;
+
 
         [ObservableProperty]
         private IEnumerable<RedisReleaseInfo> _redisReleaseInfos;
 
-        public RedisReleaseViewModel(IGithubRedisApi githubRedisApi)
+        public RedisReleaseViewModel(IGithubRedisApi githubRedisApi, 
+            IDialogService dialogService)
         {
             _githubRedisApi = githubRedisApi;
-            Task.Run(OnGetRedisTags);
+            _dialogService = dialogService;
+
+            
         }
 
-        [RelayCommand]
-        private async Task OnGetRedisTags()
+
+        public void OnNavigatedTo()
         {
-            RedisReleaseInfos = await _githubRedisApi.GetAsync();
+            if (!_isInitialized) InitializeViewModel();
+        }
+
+        public void OnNavigatedFrom()
+        {
+        }
+
+        private void InitializeViewModel()
+        {
+            RootDialog = _dialogService.GetDialogControl();
+            RootDialog.DialogHeight = 160;
+            RootDialog.Footer = new TextBlock
+            {
+                Margin = new Thickness(0, 10, 0, 10),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                TextWrapping = TextWrapping.WrapWithOverflow,
+                Text = "加载中...",
+            };
+
+            RootDialog.Content = new ProgressRing
+            {
+                IsIndeterminate = true,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            _isInitialized = true;
+        }
+
+        public void GetRedisList()
+        {
+            RedisReleaseInfos = _githubRedisApi.GetAsync().Result;
         }
     }
 }

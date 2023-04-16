@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,9 @@ namespace LeadingCode.RedisPack.Views.Pages
             InitializeComponent();
         }
 
-        
+        private void RedisReleasePage_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var loads = this.Dispatcher.BeginInvoke(ViewModel.GetRedisList);
+        }
     }
 }

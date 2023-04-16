@@ -9,15 +9,14 @@ namespace LeadingCode.RedisPack.Models
 
         public string Name { get; set; }
 
-        [JsonProperty("tarball_url")]
-        public string TarBallUrl { get; set; }
+        public string tarball_url { get; set; }
 
-        [JsonProperty("zipball_url")]
-        public string ZipBallUrl { get; set; }
+        public string zipball_url { get; set; }
 
-        [JsonProperty("published_at")]
-        public DateTime PublishedAt { get; set; }
+        public DateTime published_at { get; set; }
 
-        public string Body { get; set; }
+        public string Body => $"https://github.com/redis/redis/releases/tag/{Name}";
+
+        public string PublishedAt => published_at.ToShortDateString();
     }
 }

@@ -15,16 +15,73 @@
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Loaded="RedisReleasePage_OnLoaded"
     mc:Ignorable="d">
-    <ui:DynamicScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <StackPanel Margin="42">
-            <ListView ItemsSource="{Binding ViewModel.RedisReleaseInfos}">
+
+    <Grid Margin="42">
+        <ui:DynamicScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ListView
+                x:Name="ListView"
+                ItemsSource="{Binding ViewModel.RedisReleaseInfos, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedIndex="1">
                 <ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:RedisReleaseInfo}">
-                        <TextBlock Margin="0,5,0,5" Text="{Binding Name}" />
+                        <Grid Margin="8,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse
+                                x:Name="Ellipse"
+                                Grid.RowSpan="2"
+                                Width="32"
+                                Height="32"
+                                Margin="6"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Fill="{ui:ThemeResource ControlStrongStrokeColorDefaultBrush}" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="12,6,0,0"
+                                FontWeight="Bold"
+                                Text="{Binding Name, Mode=OneWay}" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Content="{Binding PublishedAt, Mode=OneWay}" />
+                            <ui:Hyperlink
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Margin="12,0,0,6"
+                                Content="zip"
+                                NavigateUri="{Binding zipball_url, Mode=OneWay}" />
+                            <ui:Hyperlink
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Margin="12,0,0,6"
+                                Content="tar.gz"
+                                NavigateUri="{Binding tarball_url, Mode=OneWay}" />
+                            <ui:Hyperlink
+                                Grid.Row="1"
+                                Grid.Column="4"
+                                Margin="12,0,0,6"
+                                Content="note"
+                                NavigateUri="{Binding Body, Mode=OneWay}" />
+
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </StackPanel>
-    </ui:DynamicScrollViewer>
+        </ui:DynamicScrollViewer>
+    </Grid>
+
 </Page>
