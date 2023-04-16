@@ -7,13 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.IO;
-using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LeadingCode.RedisPack.Apis;
@@ -23,17 +21,13 @@ using Wpf.Ui.Contracts;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Controls.Navigation;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Wpf.Ui.Common;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
-using MessageBox = System.Windows.MessageBox;
-using Wpf.Ui.Appearance;
 using System.Windows.Threading;
-using System.Timers;
 using LeadingCode.RedisPack.Helpers;
-using Microsoft.VisualBasic.ApplicationServices;
+using LeadingCode.RedisPack.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace LeadingCode.RedisPack.ViewModels;
 
@@ -44,6 +38,8 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
     private readonly IGithubRedisFileApi _githubRedisFileApi;
     private readonly IDialogService _dialogService;
     private readonly ISnackbarService _snackbarService;
+    private readonly IConfiguration _configuration;
+    private readonly IWritableOptions<MsysConfig> _appConfig;
     DispatcherTimer _timer;
     private GenerateState _state = GenerateState.INIT;
     private string _tempDir = string.Empty;
@@ -68,12 +64,17 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
     [ObservableProperty]
     private string _redisDir = string.Empty;
 
-    public GenerateViewModel(IGithubRedisApi githubRedisApi, IDialogService dialogService, ISnackbarService snackbarService, IGithubRedisFileApi githubRedisFileApi)
+    [ObservableProperty]
+    private bool _isInit = false;
+
+    public GenerateViewModel(IGithubRedisApi githubRedisApi, IDialogService dialogService, ISnackbarService snackbarService, IGithubRedisFileApi githubRedisFileApi, IConfiguration configuration, IWritableOptions<MsysConfig> appConfig)
     {
         _githubRedisApi = githubRedisApi;
         _dialogService = dialogService;
         _snackbarService = snackbarService;
         _githubRedisFileApi = githubRedisFileApi;
+        _configuration = configuration;
+        _appConfig = appConfig;
     }
 
     public void OnNavigatedTo()
@@ -88,6 +89,8 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
 
     private void InitializeViewModel()
     {
+        IsInit = _appConfig.Value.IsInit;
+        if (!_appConfig.Value.IsInit) MsysDir = _appConfig.Value.BaseDir;
         _rootDialog = _dialogService.GetDialogControl();
 
         _rootDialog.DialogHeight = 160;
@@ -195,6 +198,11 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
             case GenerateState.INIT:
                 _rootDialog.Hide();
                 _snackbarService.Show("配置成功", $"MSYS配置成功。", SymbolRegular.Checkmark12, ControlAppearance.Success);
+                _appConfig.Update(opt =>
+                {
+                    opt.IsInit = false;
+                    opt.BaseDir = MsysDir;
+                });
                 break;
             case GenerateState.REDIS_UNZIP_END:
                 CompileRedis();

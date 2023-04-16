@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Configuration;
 using System.Net.Http;
 using System.Windows;
+using LeadingCode.RedisPack.Helpers;
+using LeadingCode.RedisPack.Models;
 using LeadingCode.RedisPack.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
@@ -29,6 +33,12 @@ public partial class App : Application
             .WriteTo.Async(c => c.File("Logs/logs.txt"))
             .CreateLogger();
 
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json",
+            optional: true,
+            reloadOnChange: true)
+            .Build();
+
         try
         {
             Log.Information("Starting WPF host.");
@@ -36,8 +46,8 @@ public partial class App : Application
             _abpApplication =  await AbpApplicationFactory.CreateAsync<RedisPackModule>(options =>
             {
                 options.UseAutofac();
-
                 options.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+                options.Services.ConfigureWritable<MsysConfig>(configuration.GetSection("MSYS"));
             });
 
             await _abpApplication.InitializeAsync();

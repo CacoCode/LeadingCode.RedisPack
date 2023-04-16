@@ -5,9 +5,9 @@
 
 namespace LeadingCode.RedisPack.Models;
 
-public class AppConfig
+public class MsysConfig
 {
-    public string ConfigurationsFolder { get; set; }
+    public string BaseDir { get; set; }
 
-    public string AppPropertiesFileName { get; set; }
+    public bool IsInit { get; set; }
 }

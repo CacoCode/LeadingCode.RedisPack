@@ -32,8 +32,9 @@
                 Margin="0,12,0,12"
                 FontSize="18"
                 FontWeight="DemiBold"
-                Text="配置MSYS（生成之前执行，仅首次使用需要配置）" />
-            <Grid>
+                Text="配置MSYS（生成之前执行，仅首次使用需要配置）"
+                Visibility="{Binding ViewModel.IsInit, Converter={StaticResource BoolToVisibilityConverter}}" />
+            <Grid Visibility="{Binding ViewModel.IsInit, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="200" />
