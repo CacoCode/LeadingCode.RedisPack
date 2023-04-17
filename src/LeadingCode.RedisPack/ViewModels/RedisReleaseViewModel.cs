@@ -2,12 +2,14 @@
 using LeadingCode.RedisPack.Apis;
 using LeadingCode.RedisPack.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows;
 using Volo.Abp.DependencyInjection;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Controls.Navigation;
 using Wpf.Ui.Contracts;
+using System.Windows.Documents;
 
 namespace LeadingCode.RedisPack.ViewModels
 {
@@ -64,7 +66,8 @@ namespace LeadingCode.RedisPack.ViewModels
 
         public void GetRedisList()
         {
-            RedisReleaseInfos = _githubRedisApi.GetAsync().Result;
+            var list = _githubRedisApi.GetAsync().Result;
+            RedisReleaseInfos = list.OrderByDescending(a => a.Name).ToList();
         }
     }
 }

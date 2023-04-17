@@ -23,6 +23,7 @@ using Wpf.Ui.Controls.Navigation;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Wpf.Ui.Common;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Windows.Threading;
 using LeadingCode.RedisPack.Helpers;
@@ -116,7 +117,8 @@ public partial class GenerateViewModel : ObservableObject, INavigationAware, ISc
     {
 
         _rootDialog.Show();
-        RedisReleaseInfos = await _githubRedisApi.GetAsync();
+        var list = await _githubRedisApi.GetAsync();
+        RedisReleaseInfos = list.OrderByDescending(a => a.Name).ToList();
         _rootDialog.Hide();
     }
 
