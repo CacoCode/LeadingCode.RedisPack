@@ -19,7 +19,7 @@ PS:因本人不熟悉WPF，请手下留情。
 |7.0.0|[下载](/attrs/redis-7.0.0.7z)|
 |6.2.9|[下载](/attrs/redis-6.2.9.7z)|
 
-# Redis Windows 安装包编译工具
+# Redis Windows 编译工具安装包
 [exe文件下载](/attrs/setup.exe)
 
 [msi文件下载](/attrs/LeadingCode.RedisPack.Installer.msi)
