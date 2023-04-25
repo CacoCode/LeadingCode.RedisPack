@@ -1,4 +1,9 @@
-# LeadingCode.RedisPack
+
+# LeadingCode.RedisPack 
+<p> 
+    中文 |
+    <a href="README_EN.md">English</a>
+</p>
 Reids Windows 安装包编译器；包含最新Redis Windows安装包下载。该软件可以引导手动编译Redis Windows包，也提供了自动编译Redis Windows包功能。
 
 PS:因本人不熟悉WPF，请手下留情。
