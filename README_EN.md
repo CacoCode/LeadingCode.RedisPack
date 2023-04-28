@@ -12,6 +12,8 @@ PS: Since I am not familiar with WPF, please be merciful.
 # Redis windows installation package
 |Version|Download link|
 |-|-|
+|7.2-rc|[Download](/attrs/redis-7.2-rc.7z)|
+|7.0.11|[Download](/attrs/redis-7.0.11.7z)|
 |7.0.10|[Download](/attrs/redis-7.0.10.7z)|
 |7.0.9|[Download](/attrs/redis-7.0.9.7z)|
 |7.0.8|[Download](/attrs/redis-7.0.8.7z)|
@@ -24,6 +26,13 @@ PS: Since I am not familiar with WPF, please be merciful.
 |7.0.1|[Download](/attrs/redis-7.0.1.7z)|
 |7.0.0|[Download](/attrs/redis-7.0.0.7z)|
 |6.2.9|[Download](/attrs/redis-6.2.9.7z)|
+
+
+# Redis windows run command
+```
+redis-server.exe redis.conf
+```
+<b>PS:Can be installed as a window service in conjunction with [nssm](http://www.nssm.cc/)</b>
 
 # Redis windows compilation tool installation package
 [exe file download](/attrs/setup.exe)
