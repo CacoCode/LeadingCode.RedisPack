@@ -11,6 +11,8 @@ PS:因本人不熟悉WPF，请手下留情。
 # Redis Windows 安装包
 |版本|下载地址|
 |-|-|
+|7.2-rc|[下载](/attrs/redis-7.2-rc.7z)|
+|7.0.11|[下载](/attrs/redis-7.0.11.7z)|
 |7.0.10|[下载](/attrs/redis-7.0.10.7z)|
 |7.0.9|[下载](/attrs/redis-7.0.9.7z)|
 |7.0.8|[下载](/attrs/redis-7.0.8.7z)|
@@ -28,6 +30,12 @@ PS:因本人不熟悉WPF，请手下留情。
 [exe文件下载](/attrs/setup.exe)
 
 [msi文件下载](/attrs/LeadingCode.RedisPack.Installer.msi)
+
+# 运行命令
+```
+redis-server.exe redis.conf
+```
+<b>PS:可结合[nssm](http://www.nssm.cc/)安装成window服务</b>
 
 # 效果展示
 ![自动生成](/doc/1.png)
