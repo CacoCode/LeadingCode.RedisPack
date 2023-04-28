@@ -26,16 +26,16 @@ PS:因本人不熟悉WPF，请手下留情。
 |7.0.0|[下载](/attrs/redis-7.0.0.7z)|
 |6.2.9|[下载](/attrs/redis-6.2.9.7z)|
 
-# Redis Windows 编译工具安装包
-[exe文件下载](/attrs/setup.exe)
-
-[msi文件下载](/attrs/LeadingCode.RedisPack.Installer.msi)
-
-# 运行命令
+# Redis Window 运行命令
 ```
 redis-server.exe redis.conf
 ```
 <b>PS:可结合[nssm](http://www.nssm.cc/)安装成window服务</b>
+
+# Redis Windows 编译工具安装包
+[exe文件下载](/attrs/setup.exe)
+
+[msi文件下载](/attrs/LeadingCode.RedisPack.Installer.msi)
 
 # 效果展示
 ![自动生成](/doc/1.png)
